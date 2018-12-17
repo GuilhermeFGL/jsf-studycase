@@ -6,17 +6,78 @@
 
 	<h:head>
 		<title>Cadastro de Pessoas</title>
+		
+		<h:outputStylesheet library="styles" name="style.css" />
 	</h:head>
 	
 	<h:body>
 		<h1>Cadastro de Pessoas</h1>
-	
-		<h:form>
-			<label>Nome: <h:inputText id="nome" value="#{pessoaBean.pessoaSelecionada.nome}" /></label><br />
-			<label>Email: <h:inputText id="email" value="#{pessoaBean.pessoaSelecionada.email}" /></label><br />
-			<label>Telefone: <h:inputText id="telefone" value="#{pessoaBean.pessoaSelecionada.telefone}" /></label><br />
-			<h:commandButton action="#{pessoaBean.salvar}" value="Salvar" />
 		
+		<h:messages infoClass="info" errorClass="error" fatalClass="fatal" warnClass="warn" />
+		
+		<h:form rendered="#{empty pessoaBean.pessoaSelecionada}">
+			<h:selectOneRadio id="tipoPessoa" value="#{pessoaBean.tipoPessoa}">
+				<f:selectItem itemLabel="Pessoa Física" itemValue="PF" />			
+				<f:selectItem itemLabel="Pessoa Jurídica" itemValue="PJ" />			
+			</h:selectOneRadio>
+			<h:commandButton action="#{pessoaBean.criar()}" value="Criar nova" />
+		</h:form>
+	
+		<h:form rendered="#{not empty pessoaBean.pessoaSelecionada}">
+			<label>Nome: 
+				<h:inputText id="nome" value="#{pessoaBean.pessoaSelecionada.nome}" validatorMessage="Nome é obrigatório">
+					<f:validateRequired />
+				</h:inputText>
+				<h:message for="nome" />
+			</label><br />
+			
+			<label>Email: 
+				<h:inputText id="email" value="#{pessoaBean.pessoaSelecionada.email}" validatorMessage="Email inválido">
+					<f:validateRegex pattern=".+@.+" />
+				</h:inputText>
+				<h:message for="email" />
+			</label><br />
+			
+			<label>Telefone: <h:inputText id="telefone" value="#{pessoaBean.pessoaSelecionada.telefone}" /></label><br />
+			
+			<h:panelGrid id="gridPessoaFisica" rendered="#{pessoaBean.pessoaFisica}">
+				<label>CPF: 
+					<h:inputText id="cpf" value="#{pessoaBean.pessoaSelecionada.cpf}" validatorMessage="CPF inválido">
+						<f:validateRegex pattern="\d{3}(\.\d{3}){2}-\d{2}"></f:validateRegex>
+					</h:inputText>
+					<h:message for="cpf"/> 
+				</label><br />
+				
+				<label>Data de nascimento:
+					<h:inputText id="dtNascimento" value="#{pessoaBean.pessoaSelecionada.dataNascimento}" converterMessage="Data inválida" >
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:inputText>
+					<h:message for="dtNascimento" />
+				</label><br />
+				
+				<label>Sexo:
+					<h:selectOneRadio id="sexo" value="#{pessoaBean.pessoaSelecionada.sexo}">
+						<f:selectItems value="#{pessoaBean.sexos}" var="s" itemLabel="#{s.nome}" />
+					</h:selectOneRadio>
+					<h:message for="sexo" />
+				</label>
+			</h:panelGrid>
+			
+			<h:panelGrid id="gridPessoaJuridica" rendered="#{pessoaBean.pessoaJuridica}">
+				<label>CNPJ: 
+					<h:inputText id="cnpj" value="#{pessoaBean.pessoaSelecionada.cnpj}" validatorMessage="CNPJ inválido" />
+				</label><br />
+				
+				<label>Razao Social: 
+					<h:inputText id="razaoSocial" value="#{pessoaBean.pessoaSelecionada.razaoSocial}" validatorMessage="CNPJ inválido" />
+				</label><br />
+			</h:panelGrid>
+			
+			<h:commandButton action="#{pessoaBean.salvar}" value="Salvar" />&nbsp;
+			<h:commandButton action="#{pessoaBean.cancelar}" value="Cancelar" immediate="true" />
+		</h:form>
+		
+		<h:form>
 			<h2>Pessoas cadastradas</h2>
 			<h:dataTable value="#{pessoaBean.pessoas}" var="p">
 				<h:column>
@@ -45,5 +106,4 @@
 	
 	</h:body>
 	
-
 </html>
