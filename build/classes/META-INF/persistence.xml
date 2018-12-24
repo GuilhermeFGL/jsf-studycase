@@ -10,5 +10,6 @@
 		<class>modelo.DiariaReservada</class>
 		<class>modelo.Quarto</class>
 		<class>modelo.DiariaAvulsa</class>
+		<class>modelo.Estudante</class>
 	</persistence-unit>
 </persistence>
